@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azure App Service Flask Lab</title>
+    <title>Weather Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,6 +23,7 @@
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(8px);
+            width: 400px;
         }
         h1 {
             margin-bottom: 10px;
@@ -30,32 +31,77 @@
         }
         p {
             font-size: 1.2rem;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-        a.button {
-            display: inline-block;
+        button {
             padding: 12px 25px;
             background-color: #fff;
             color: #0078D4;
             border-radius: 30px;
             font-weight: bold;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
             transition: 0.3s;
         }
-        a.button:hover {
+        button:hover {
             background-color: #e6e6e6;
+        }
+
+        /* Weather Box */
+        #weather-box {
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left;
+            display: none;
+        }
+        #weather-box h3 {
+            margin-top: 0;
+            color: #fff;
+        }
+        #weather-box p {
+            margin: 8px 0;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Azure App Service Lab</h1>
-        <p>Deploy Code Automatically in Azure App Service Instance</p>
+        <h1>Welcome to check Weather Report</h1>
         <p>Version 1.0 — This is previous version</p>
-        <p>Version 1.1 — This is new version</p>
-        <a class="button" href="/api">Test the API</a>
+        
+
+        <button onclick="getWeather()">Get Weather</button>
+
+        <div id="weather-box">
+            <h3>Weather Report</h3>
+            <p><strong>Temperature:</strong> <span id="temp"></span></p>
+            <p><strong>Condition:</strong> <span id="weather"></span></p>
+            <p><strong>Humidity:</strong> <span id="humidity"></span></p>
+        </div>
     </div>
+
+    <script>
+        function getWeather() {
+            fetch('/api')
+                .then(response => response.json())
+                .then(data => {
+                    let current = data.current_condition[0];
+
+                    document.getElementById("temp").innerText = current.temp_C + " °C";
+                    document.getElementById("weather").innerText = current.weatherDesc[0].value;
+                    document.getElementById("humidity").innerText = current.humidity + " %";
+
+                    document.getElementById("weather-box").style.display = "block";
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Failed to fetch weather data.");
+                });
+        }
+    </script>
 
 </body>
 </html>
